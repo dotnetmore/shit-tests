@@ -1,8 +1,9 @@
+using ShitTests.Interfaces;
 using ShitTests.ValueTypes;
 
 namespace ShitTests;
 
-public class MySimpleService
+public class MySimpleService : ISalaryCalculator
 {
     public decimal GetCommunismMoney(EmployeeClass employeeClass, decimal allowance)
     {
