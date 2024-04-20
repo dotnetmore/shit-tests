@@ -1,8 +1,8 @@
-namespace ShitTests;
+namespace ShitTests.Entites;
 
 public class Employee
 {
-    public string Name { get; set; }
-    public string Position { get; set; }
-    public decimal Allowance { get; set; }
+    public required string Name { get; init; }
+    public required string Position { get; init; }
+    public required decimal Allowance { get; init; }
 }

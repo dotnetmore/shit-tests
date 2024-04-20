@@ -1,4 +1,4 @@
-namespace ShitTests;
+namespace ShitTests.Exceptions;
 
 public class DeadSpiritsViolationException : Exception
 {

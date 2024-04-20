@@ -1,7 +1,7 @@
-namespace ShitTests;
+namespace ShitTests.Entites;
 
 public class User
 {
-    public string Name { get; set; }
-    public int Age { get; set; }
+    public required string Name { get; init; }
+    public required int Age { get; init; }
 }

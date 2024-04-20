@@ -1,4 +1,4 @@
-namespace ShitTests;
+namespace ShitTests.Interfaces;
 
 public interface ICurrencyRateProvider
 {

@@ -1,4 +1,4 @@
-namespace ShitTests;
+namespace ShitTests.ValueTypes;
 
 public enum EmployeeClass
 {
