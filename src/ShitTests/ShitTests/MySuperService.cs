@@ -1,26 +1,61 @@
 using ShitTests.Entites;
 using ShitTests.Interfaces;
-using ShitTests.ValueTypes;
 
 namespace ShitTests;
 
-public class MySuperService(
-    IEmploymentService employmentService,
-    ISalaryCalculator mySimpleService) : IUserSalaryCalculator
+public class MySuperService: IUserSalaryCalculator
 {
-    public decimal? CalculateUserSalary(User? user)
+    private readonly IUserSalaryCalculator _calculator;
+    
+    public MySuperService(
+        ICache cache,
+        ICurrencyRateProvider currencyRateProvider,
+        ISecurityChecker securityChecker,
+        IEmploymentService employmentService,
+        ICashier cashier,
+        IEmailSender emailSender,
+        IGovernmentService governmentService,
+        IWeatherService weatherService,
+        ITimeService timeService,
+        IEmailRegistry emailRegistry,
+        ISalaryCalculator salaryCalculator)
     {
-        if (user is null)
-            return null;
-        
-        if (employmentService.GetEmployee(user) is not { } employee)
-            return null;
-        
-        var salary = mySimpleService.GetCommunismMoney(EmployeeClass.Proletariat, employee.Allowance);
+        var employeeBased = new EmployeeBasedUserSalaryCalculator(
+            employmentService,
+            salaryCalculator);
 
-        if (employee.Position == "CEO")
-            salary *= 10;
+        var currencyBased = new CurrencyBasedUserSalaryCalculator(
+            employeeBased,
+            currencyRateProvider);
+        
+        var safe = new SafeUserSalaryCalculator(
+            currencyBased,
+            securityChecker,
+            cashier,
+            governmentService);
 
-        return salary;
+        var weather = new WeatherBasedUserSalaryCalculator(
+            safe,
+            weatherService);
+        
+        var notifying = new NotifyingUserSalaryCalculator(
+            weather,
+            emailSender,
+            emailRegistry,
+            timeService);
+
+        var caching = new CachingUserSalaryCalculator(
+            notifying,
+            cache);
+
+        _calculator = caching;
     }
+
+    public MySuperService(IUserSalaryCalculator calculator)
+    {
+        _calculator = calculator;
+    }
+
+    public decimal? CalculateUserSalary(User? user) => 
+        _calculator.CalculateUserSalary(user);
 }

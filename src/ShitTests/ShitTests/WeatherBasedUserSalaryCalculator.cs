@@ -14,12 +14,10 @@ public class WeatherBasedUserSalaryCalculator(
             return null;
         
         var salary = baseCalculator.CalculateUserSalary(user);
+        
         if (!salary.HasValue)
             return null;
         
-        if (weatherService.GetWeather() == "snow")
-            return null;
-
-        return salary;
+        return weatherService.GetWeather() == "snow" ? null : salary;
     }
 }

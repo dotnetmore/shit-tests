@@ -1,7 +1,7 @@
-using System;
 using NSubstitute;
 using ShitTests.Entites;
 using ShitTests.Interfaces;
+using ShitTests.ValueTypes;
 using Xunit;
 
 namespace ShitTests.Tests;
@@ -19,25 +19,23 @@ namespace ShitTests.Tests;
 /// Generate tests for all methods in class ShitTests.MySuperService
 /// </remarks>
 /// </summary>
-public class MySuperServiceTest
+public class EmployeeBasedUserSalaryCalculatorTest
 {
-    private readonly MySuperService _mySuperService;
-    private readonly IEmploymentService _mockEmploymentService;
+    private readonly IEmploymentService _mockEmploymentService = Substitute.For<IEmploymentService>();
+    private readonly ISalaryCalculator _mockSalaryCalculator = Substitute.For<ISalaryCalculator>();
+    private readonly EmployeeBasedUserSalaryCalculator _calculator;
 
-    public MySuperServiceTest()
+    public EmployeeBasedUserSalaryCalculatorTest()
     {
-        _mockEmploymentService = Substitute.For<IEmploymentService>();
-        
-        _mySuperService = new MySuperService(
-            _mockEmploymentService, new MySimpleService());
+        _calculator = new EmployeeBasedUserSalaryCalculator(
+            _mockEmploymentService,
+            _mockSalaryCalculator);
     }
     
-    #region CalculateUserSalary
-
     [Fact]
     public void CalculateUserSalary_UserIsNull_ReturnsNull()
     {
-        var result = _mySuperService.CalculateUserSalary(null);
+        var result = _calculator.CalculateUserSalary(null);
         Assert.Null(result);
     }
 
@@ -47,7 +45,7 @@ public class MySuperServiceTest
         var user = new User { Name = "Test User", Age = 20 };
         _mockEmploymentService.GetEmployee(user).Returns((Employee?)null);
 
-        var result = _mySuperService.CalculateUserSalary(user);
+        var result = _calculator.CalculateUserSalary(user);
 
         Assert.Null(result);
     }
@@ -56,14 +54,16 @@ public class MySuperServiceTest
     public void CalculateUserSalary_UserIsValidAndConditionAreNormalNoAllowance_Returns42()
     {
         var user = new User { Age = 32, Name = "Test User" };
-        _mockEmploymentService.GetEmployee(user).Returns(new Employee
+        var employee = new Employee
         {
             Position = "HARD WORKER",
             Allowance = 0,
             Name = "Test User"
-        });
+        };
+        _mockEmploymentService.GetEmployee(user).Returns(employee);
+        _mockSalaryCalculator.GetCommunismMoney(EmployeeClass.Proletariat, 0).Returns(42);
 
-        var result = _mySuperService.CalculateUserSalary(user);
+        var result = _calculator.CalculateUserSalary(user);
 
         Assert.NotNull(result);
         Assert.Equal(42, result);
@@ -73,14 +73,16 @@ public class MySuperServiceTest
     public void CalculateUserSalary_UserIsValidAndConditionAreNormalWithAllowance100_Returns142()
     {
         var user = new User { Age = 32, Name = "Test User" };
-        _mockEmploymentService.GetEmployee(user).Returns(new Employee
+        var employee = new Employee
         {
             Position = "HARD WORKER",
             Allowance = 100,
             Name = "Test User"
-        });
-
-        var result = _mySuperService.CalculateUserSalary(user);
+        };
+        _mockEmploymentService.GetEmployee(user).Returns(employee);
+        _mockSalaryCalculator.GetCommunismMoney(EmployeeClass.Proletariat, 100).Returns(142);
+        
+        var result = _calculator.CalculateUserSalary(user);
 
         Assert.NotNull(result);
         Assert.Equal(142, result);
@@ -90,14 +92,16 @@ public class MySuperServiceTest
     public void CalculateUserSalary_UserIsValidAndConditionAreNormalPositionIsCEO_Returns420()
     {
         var user = new User { Age = 32, Name = "Test User" };
-        _mockEmploymentService.GetEmployee(user).Returns(new Employee
+        var employee = new Employee
         {
             Position = "CEO",
             Allowance = 0,
             Name = "Test User"
-        });
+        };
+        _mockEmploymentService.GetEmployee(user).Returns(employee);
+        _mockSalaryCalculator.GetCommunismMoney(EmployeeClass.Proletariat, 0).Returns(42);
 
-        var result = _mySuperService.CalculateUserSalary(user);
+        var result = _calculator.CalculateUserSalary(user);
 
         Assert.NotNull(result);
         Assert.Equal(420, result);
@@ -114,8 +118,6 @@ public class MySuperServiceTest
             Name = "Test User"
         });
         
-        _mySuperService.CalculateUserSalary(user);
+        _calculator.CalculateUserSalary(user);
     }
-
-    #endregion
 }
