@@ -1,10 +1,11 @@
-﻿using ShitTests.Entites;
+﻿using Pure.DI;
+using ShitTests.Entites;
 using ShitTests.Interfaces;
 
 namespace ShitTests;
 
 public class CachingUserSalaryCalculator(
-    IUserSalaryCalculator baseCalculator,
+    [Type(typeof(NotifyingUserSalaryCalculator))] IUserSalaryCalculator baseCalculator,
     ICache cache)
     : IUserSalaryCalculator
 {

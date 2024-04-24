@@ -1,10 +1,11 @@
-﻿using ShitTests.Entites;
+﻿using Pure.DI;
+using ShitTests.Entites;
 using ShitTests.Interfaces;
 
 namespace ShitTests;
 
 public class CurrencyBasedUserSalaryCalculator(
-    IUserSalaryCalculator baseCalculator,
+    [Type(typeof(EmployeeBasedUserSalaryCalculator))] IUserSalaryCalculator baseCalculator,
     ICurrencyRateProvider currencyRateProvider)
     : IUserSalaryCalculator
 {

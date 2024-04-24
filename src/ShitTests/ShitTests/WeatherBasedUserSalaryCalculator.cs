@@ -1,10 +1,11 @@
-﻿using ShitTests.Entites;
+﻿using Pure.DI;
+using ShitTests.Entites;
 using ShitTests.Interfaces;
 
 namespace ShitTests;
 
 public class WeatherBasedUserSalaryCalculator(
-    IUserSalaryCalculator baseCalculator,
+    [Type(typeof(SafeUserSalaryCalculator))] IUserSalaryCalculator baseCalculator,
     IWeatherService weatherService)
     : IUserSalaryCalculator
 {

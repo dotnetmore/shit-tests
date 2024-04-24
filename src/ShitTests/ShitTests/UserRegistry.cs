@@ -4,7 +4,7 @@ using ShitTests.ValueTypes;
 
 namespace ShitTests;
 
-public class UserRegistry(IDatabase database)
+public class UserRegistry(IDatabase database) : IUserRegistry
 {
     public UserId RegisterUser(User user)
     {

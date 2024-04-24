@@ -1,10 +1,11 @@
-﻿using ShitTests.Entites;
+﻿using Pure.DI;
+using ShitTests.Entites;
 using ShitTests.Interfaces;
 
 namespace ShitTests;
 
 public class NotifyingUserSalaryCalculator(
-    IUserSalaryCalculator baseCalculator,
+    [Type(typeof(WeatherBasedUserSalaryCalculator))] IUserSalaryCalculator baseCalculator,
     IEmailSender emailSender,
     IEmailRegistry emailRegistry,
     ITimeService timeService)

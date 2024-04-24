@@ -1,11 +1,12 @@
-﻿using ShitTests.Entites;
+﻿using Pure.DI;
+using ShitTests.Entites;
 using ShitTests.Exceptions;
 using ShitTests.Interfaces;
 
 namespace ShitTests;
 
 public class SafeUserSalaryCalculator(
-    IUserSalaryCalculator baseCalculator,
+    [Type(typeof(CurrencyBasedUserSalaryCalculator))] IUserSalaryCalculator baseCalculator,
     ISecurityChecker securityChecker,
     ICashier cashier,
     IGovernmentService governmentService)
