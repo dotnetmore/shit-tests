@@ -8,7 +8,7 @@ namespace ShitTests;
 public class MySuperService
 {
     private readonly IDatabase _database;
-    private readonly ICash _cash;
+    private readonly ICache _cache;
     private readonly ICurrencyRateProvider _currencyRateProvider;
     private readonly ISecurityChecker _securityChecker;
     private readonly IEmploymentService _employmentService;
@@ -21,7 +21,7 @@ public class MySuperService
     private readonly MySimpleService _mySimpleService;
 
     public MySuperService(IDatabase database,
-        ICash cash,
+        ICache cache,
         ICurrencyRateProvider currencyRateProvider,
         ISecurityChecker securityChecker,
         IEmploymentService employmentService,
@@ -34,7 +34,7 @@ public class MySuperService
         MySimpleService mySimpleService)
     {
         _database = database;
-        _cash = cash;
+        _cache = cache;
         _currencyRateProvider = currencyRateProvider;
         _securityChecker = securityChecker;
         _employmentService = employmentService;
@@ -64,7 +64,7 @@ public class MySuperService
         if (user is null)
             return null;
         
-        if (_cash.GetCachedSalary(user) is { } cached)
+        if (_cache.GetCachedSalary(user) is { } cached)
             return cached;
         
         if (user.Age < _governmentService.AgeToStartWork)
@@ -96,7 +96,7 @@ public class MySuperService
         if (hour is > 9 and < 18)
             _emailSender.SendEmail(_emailRegistry.GetEmail(user), $"New salary {salary}");
 
-        _cash.SaveToCache(salary);
+        _cache.SaveToCache(salary);
 
         return salary;
     }

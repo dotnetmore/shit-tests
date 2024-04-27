@@ -1,6 +1,6 @@
 namespace ShitTests.Entites;
 
-public class Employee
+public record Employee
 {
     public required string Name { get; init; }
     public required string Position { get; init; }
